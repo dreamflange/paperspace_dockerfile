@@ -1,56 +1,54 @@
-# Dockerfile for Paperspace
+# paperspace用Dockerfile
 
-[Japanese](README_ja.md)
+ [日本語](README_ja.md)
 
-## What is this?
-This is a Dockerfile for Paperspace, based on `cuda:12.4.1-cudnn-devel-ubuntu22.04`.  
-Since the official Paperspace image updates are slow, I decided to create this one.  
-It includes a `docker-compose.yaml` file used for building in WSL, so feel free to customize it to fit your needs.
+## 何これ？
+cuda:12.4.1-cudnn-devel-ubuntu22.04をベースにしたpaperspace用のDockerfile  
+paperspaceの公式はイメージの更新が遅いので作ってみた  
+WSLでビルドに使ってるdocker-compose.yamlが付いてるので各自カスタマイズしてね  
 
-### Git Pull & Build
+### gitpull & build
 ```bash
 git clone https://github.com/dreamflange/paperspace_dockerfile  
 cd paperspace_dockerfile  
 docker compose build  
+```
 
-
-### Start the Container and Access the Shell
+### コンテナを起動して中に入ってみる
 ```bash
 docker compose up -d
 docker compose exec paperspace bash  
 ```
 
-### Upload to DockerHub
+### dockerHubにアップする
 ```bash
 docker login -u myDockerHubAccount  
 docker tag paperspace_dockerfile-paperspace myDockerHubAccount/repositoryName:latest  
 docker push myDockerHubAccount/repositoryName:latest  
 ```
 
-### Create a Project on Paperspace
-Go to Notebooks → Start from Scratch → View advanced options → Advanced options and specify the DockerHub repository and image you uploaded under Container to launch it.
+### paperspaceでprojectを作る
+Notebooks → Start from Scratch → View advanced options → Advanced options → ContainerにDocherHubにupったリポジトリとイメージを入れて起動（雑）  
 
-
-## Additional Info
-Large images containing all applications might time out before the download from DockerHub completes when starting a VM. Therefore, a smaller image is used here.
-Although applications and PyTorch need to be downloaded and installed each time, using a cache can make it easier to standardize the PyTorch version across sd-scripts and ComfyUI.
-
+## 色々
+全てのアプリを入れた大型イメージはVM起動時にdockerHubからのダウンロードが終わる前にタイムアウトに 
+なる場合があるので小型のイメージ
+毎回アプリとpytorchをダウンロード&インストールする事になるが、キャッシュが効くのでpytorchのバージョンをsd-scriptやcomfyuiなどで共通化させた方がいい  
 ```bash
 ./venv/bin/pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu124  
 ./venv/bin/pip install xformers==0.0.28  
 ```
   
-You can place custom shell scripts in /notebooks/share as it has a path set up.
+/notebooks/shareにパスを通してあるので自分用のシェルスクリプトを置くといいよ  
 
-To automatically log in with your Hugging Face token on startup, place a file in /notebooks/share/.env with your Hugging Face token in the following format:
-
-
+/notebooks/share/.envに以下の形式で自分のhuggingfaceTokenを入れたファイルを置くと起動時に自動でログインするよ  
 ```
 HF_TOKEN=hf_MyHuggingFaceTokenEbiDance
 ```
-I tried using multi-stage builds in the build section, but it only reduced the image size by about 300 MB from a total of 9 GB, so I didn’t keep it.
 
-### Want to Download a Model from Hugging Face?
+マルチステージビルドはちょっと試したけどイメージ9Gのうち300Mぐらいしか減らなかったのでいいかな  
+
+### huggingfaceからモデルをダウンロードしたいんですけど！？  
 ```python
 from huggingface_hub import hf_hub_download
 from dotenv import load_dotenv
@@ -72,7 +70,7 @@ filename = "animagine-xl-3.1.safetensors"
 download(repo, filename)
 ```
 
-### Want to Upload a Model to Hugging Face?
+### huggingfaceにモデルをアップロードしたいんですけど！？  
 ```
 from huggingface_hub import HfApi
 from dotenv import load_dotenv
