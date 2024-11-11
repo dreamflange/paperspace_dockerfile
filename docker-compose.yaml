@@ -1,0 +1,16 @@
+services: 
+  paperspace:
+    build:
+      context: .
+    #tty: true
+    volumes:
+      - "./notebooks:/notebooks"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    # 追加
+    runtime: nvidia
