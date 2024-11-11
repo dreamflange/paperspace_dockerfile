@@ -1,6 +1,6 @@
 # Dockerfile for Paperspace
 
-[Japanese](README_ja.md)
+[Japanese](readme_ja.md)
 
 ## What is this?
 This is a Dockerfile for Paperspace, based on `cuda:12.4.1-cudnn-devel-ubuntu22.04`.  
